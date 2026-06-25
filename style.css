@@ -1,0 +1,180 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    line-height: 1.6;
+    padding: 20px;
+    margin: 0;
+}
+
+.quiz-container {
+    max-width: 800px;
+    margin: 0px auto;
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    position: relative;
+    border: 1px solid #2d2d2d;
+}
+
+h1 {
+    color: #3498db;
+    font-size: 1.5em;
+    margin-top: 0;
+    border-bottom: 2px solid #2d2d2d;
+    padding-bottom: 15px;
+    max-width: 65%;
+}
+
+.score-board {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    background-color: #252526;
+    border: 1px solid #3e3e3e;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: right;
+    font-family: monospace;
+    font-size: 1.05em;
+}
+
+.score-board .metrics {
+    color: #00e676;
+    font-weight: bold;
+}
+
+.question-box {
+    margin: 30px 0;
+}
+
+.question-text {
+    font-size: 1.25em;
+    color: #ffffff;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.option-item {
+    margin-bottom: 12px;
+}
+
+.option-label {
+    display: block;
+    padding: 14px;
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option-label:hover {
+    background-color: #333333;
+    border-color: #555555;
+}
+
+input[type="radio"] {
+    margin-right: 12px;
+    transform: scale(1.2);
+    vertical-align: middle;
+}
+
+.option-label.correct-choice {
+    background-color: #1b5e20 !important;
+    border-color: #00e676 !important;
+    color: #ffffff;
+}
+
+.option-label.incorrect-choice {
+    background-color: #b71c1c !important;
+    border-color: #ff5252 !important;
+    color: #ffffff;
+}
+
+.option-label.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.option-label.correct-choice.disabled,
+.option-label.incorrect-choice.disabled {
+    opacity: 1;
+}
+
+.feedback-area {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #252526;
+    border-left: 4px solid #3498db;
+    display: none;
+}
+
+.feedback-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.feedback-title.true {
+    color: #00e676;
+}
+
+.feedback-title.false {
+    color: #ff5252;
+}
+
+.action-area {
+    margin-top: 25px;
+    text-align: right;
+}
+
+button {
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.summary-screen {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.summary-screen h2 {
+    color: #00e676;
+}
+
+/* CSS tạo dấu mũ Góc trên đầu chữ cái giống SGK Toán Việt Nam */
+.math-angle {
+    position: relative;
+    display: inline-block;
+    padding-top: 4px;
+    margin: 0 2px;
+    font-style: normal;
+}
+
+.math-angle::before {
+    content: "^";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(1.8);
+    font-size: 0.7em;
+    font-weight: bold;
+}
