@@ -51,7 +51,7 @@ function parseTemplate(str, vSet) {
 // ================= KHO CÂU HỎI LÝ THUYẾT =================
 const theoryTemplates = [
     { q: "Cho tứ giác lồi [1234] có [12]//[34] và [14] = [23] (hai cạnh bên không song song). [1234] thuộc dạng hình nào?", a: "Hình thang cân" },
-    { q: "Cho tứ giác lồi [1234] có [12]//[34] and [13] = [24]. [1234] thuộc dạng hình nào?", a: "Hình thang cân" },
+    { q: "Cho tứ giác lồi [1234] có [12]//[34] và [13] = [24]. [1234] thuộc dạng hình nào?", a: "Hình thang cân" },
     { q: "Cho tứ giác lồi [1234] có [12]//[34] và góc[134] = góc[243]. [1234] thuộc dạng hình nào?", a: "Hình thang cân" },
 
     { q: "Cho tứ giác lồi [1234] có [12]//[34] và [23]//[14]. [1234] thuộc dạng hình nào?", a: "Hình bình hành" },
