@@ -21,7 +21,6 @@ function parseTemplate(str, vSet) {
     if (!str) return "";
     
     // 1. CHUẨN HÓA: Biến random(1-4) thành một số trong ngoặc vuông trước, ví dụ: [2]
-    // Nhờ vậy, cấu trúc "góc[random(1-4)]" sẽ trở thành "góc[2]", không bị mất dấu ngoặc vuông
     let res = str.replace(/\[random\(1-4\)\]/g, () => `[${getRandomInt(1, 4)}]`);
     
     // 2. Biến đổi chữ "độ" thành ký hiệu °
@@ -31,7 +30,8 @@ function parseTemplate(str, vSet) {
     res = res.replace(/góc\s*\[([1-4]+)\]/g, (match, p1) => {
         let letters = '';
         for(let i = 0; i < p1.length; i++) {
-            letters += vSet[parseInt(p1[i]) - 1];
+            const idx = parseInt(p1[i]) - 1;
+            letters += (vSet && vSet[idx]) ? vSet[idx] : p1[i];
         }
         return `<span class="math-angle">${letters}</span>`;
     });
@@ -40,7 +40,8 @@ function parseTemplate(str, vSet) {
     res = res.replace(/\[([1-4]+)\]/g, (match, p1) => {
         let parsed = '';
         for(let i = 0; i < p1.length; i++) {
-            parsed += vSet[parseInt(p1[i]) - 1];
+            const idx = parseInt(p1[i]) - 1;
+            parsed += (vSet && vSet[idx]) ? vSet[idx] : p1[i];
         }
         return parsed;
     });
@@ -85,16 +86,44 @@ const allShapeTypes = ["Tứ giác thường", "Hình thang", "Hình thang vuôn
 // ================= CÁC GENERATOR LOGIC TOÁN VÀ BIÊN DỊCH CHÚ THÍCH =================
 function genMathQ01() {
     let vSet = vertexSets[Math.floor(Math.random() * vertexSets.length)];
-    let a = getRandomInt(60, 110), b = getRandomInt(60, 110), c = getRandomInt(60, 110);
-    let d = 360 - (a + b + c);
+    let a, b, c, d;
+    // Lặp để đảm bảo d hợp lệ (0 < d < 180)
+    do {
+        a = getRandomInt(60, 110);
+        b = getRandomInt(60, 110);
+        c = getRandomInt(60, 110);
+        d = 360 - (a + b + c);
+    } while (d <= 0 || d >= 180);
+
+    // Tạo danh sách ứng viên cho đáp án sai
+    let candidates = [
+        d + 10, d - 10, d + 20, d - 20,
+        d + 30, d - 30, 180 - d, 360 - d
+    ];
+    // Lọc: giữ giá trị khác d, khác nhau, và nằm trong [0,360]
+    let unique = [...new Set(candidates.filter(v => v !== d && v >= 0 && v <= 360))];
+    // Nếu chưa đủ 3 thì bổ sung ngẫu nhiên
+    while (unique.length < 3) {
+        let extra = getRandomInt(0, 360);
+        if (extra !== d && !unique.includes(extra)) {
+            unique.push(extra);
+        }
+    }
+    // Lấy 3 giá trị sai đầu tiên
+    let wrongOptions = unique.slice(0, 3);
+    // Gộp với đáp án đúng
+    let options = [d, ...wrongOptions];
+    // Trộn thứ tự
+    shuffleArray(options);
+    let correctIndex = options.indexOf(d);
 
     let qRaw = `Cho tứ giác lồi [1234] có góc[1] = ${a} độ, góc[2] = ${b} độ, góc[3] = ${c} độ. Tính số đo của góc[4].`;
     let expRaw = `Tổng 4 góc tứ giác là 360°. Góc còn lại: góc[4] = 360° - (góc[1] + góc[2] + góc[3]) = 360° - (${a}° + ${b}° + ${c}°) = ${d}°.`;
 
     return {
         question: parseTemplate(qRaw, vSet),
-        options: [`${d}°`, `${d + 10}°`, `${d - 10}°`, `${180 - d > 0 ? 180 - d : d + 5}°`],
-        correctIndex: 0,
+        options: options.map(v => v + '°'),
+        correctIndex: correctIndex,
         explanation: parseTemplate(expRaw, vSet)
     };
 }
@@ -104,13 +133,24 @@ function genMathQ02() {
     let isValid = Math.random() > 0.5;
     let a, b, c, d;
     if (isValid) {
-        a = getRandomInt(50, 120); b = getRandomInt(50, 120); c = getRandomInt(50, 120);
-        d = 360 - (a + b + c);
-        if (d >= 180 || d <= 0) isValid = false;
-    }
-    if (!isValid) {
-        a = getRandomInt(100, 150); b = getRandomInt(100, 150); c = getRandomInt(100, 150);
-        d = getRandomInt(50, 100);
+        // Tạo bộ số hợp lệ (tứ giác lồi)
+        do {
+            a = getRandomInt(50, 120);
+            b = getRandomInt(50, 120);
+            c = getRandomInt(50, 120);
+            d = 360 - (a + b + c);
+        } while (d <= 0 || d >= 180 || a >= 180 || b >= 180 || c >= 180);
+    } else {
+        // Tạo bộ số không hợp lệ (tổng khác 360 hoặc có góc >=180)
+        let sum;
+        do {
+            a = getRandomInt(100, 150);
+            b = getRandomInt(100, 150);
+            c = getRandomInt(100, 150);
+            d = getRandomInt(50, 100);
+            sum = a + b + c + d;
+        } while (sum === 360 && a < 180 && b < 180 && c < 180 && d < 180);
+        // Nếu sum == 360 nhưng có góc >=180 thì vẫn là không hợp lệ, nên sẽ thoát vòng lặp.
     }
 
     let qRaw = `Cho tứ giác [1234] có góc[1]=${a} độ, góc[2]=${b} độ, góc[3]=${c} độ, góc[4]=${d} độ. Tứ giác [1234] có phải là tứ giác lồi không?`;
